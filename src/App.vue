@@ -6,6 +6,8 @@
         <li class="nav-item">
           <img class="logo" src="./assets/build-a-bot-logo.png" aria-hidden="true" />Build a robot
         </li>
+        <!-- <li>{{user.userName}}</li>
+        <button @click="changeUserName()">Change</button> -->
       </ul>
     </nav>
   </header>
@@ -23,9 +25,24 @@ import RobotBuilder from './build/RobertBuilder.vue';
 
 export default {
   name: 'App',
+  // provide() {
+  //   return {
+  //     user: this.user
+  //   };
+  // },
+  // data() {
+  //   return {
+  //     user: { userName: 'jim' }
+  //   };
+  // },
   components: {
     RobotBuilder
   }
+  // methods: {
+  //   changeUserName() {
+  //     this.user.userName = 'yest';
+  //   }
+  // }
 };
 </script>
 
