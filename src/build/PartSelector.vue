@@ -1,7 +1,16 @@
 <template>
   <div class="part" :class="position">
     <!-- <div>User: {{user.userName}}</div> -->
-    <img :src="selectedPart.src" title="arm" @click="showPartInfo = !showPartInfo"/>
+    <!-- <router-link :to="{
+        name: 'Parts',
+        params: {
+          id: selectedPart.id,
+          partType: selectedPart.type
+        }
+      }">
+        <img :src="selectedPart.src"  @click="showPartInfo" title="arm" />
+    </router-link> -->
+    <img :src="selectedPart.src"  @click="showPartInfo" title="arm" />
     <button @click="selectPreviousPart()" class="prev-selector"></button>
     <button @click="selectNextPart()" class="next-selector"></button>
     <span class="sale" v-show="selectedPart.onSale">Sale!</span>
@@ -33,7 +42,7 @@ export default {
     }
   },
   data() {
-    return { selectedPartIndex: 0, showPartInfo: false };
+    return { selectedPartIndex: 0 };
   },
   computed: {
     selectedPart() {
@@ -63,6 +72,15 @@ export default {
         this.parts.length
       );
       this.emitSelectedPart();
+    },
+    showPartInfo() {
+      this.$router.push({
+        name: 'Parts',
+        params: {
+          id: this.selectedPart.id,
+          partType: this.selectedPart.type
+        }
+      });
     }
 
   }
