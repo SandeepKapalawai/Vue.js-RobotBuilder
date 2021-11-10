@@ -5,10 +5,11 @@
   </div>
 </template>
 <script>
-import parts from '../data/parts';
+import getPartsMixin from './get-parts-mixins';
 
 export default {
   name: 'PartInfo',
+  mixins: [getPartsMixin],
   props: {
     partType: { type: String },
     id: {
@@ -22,10 +23,8 @@ export default {
     part() {
     //   const { partType, id } = this.$route.params; // one way to access your route params
       const { partType, id } = this; // another way to bypass your route params as props
-      return parts[partType].find((part) => part.id === +id);
+      return this.parts[partType].find((part) => part.id === +id);
     }
-
   }
-
 };
 </script>

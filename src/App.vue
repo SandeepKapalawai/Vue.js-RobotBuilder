@@ -1,5 +1,12 @@
 <template>
  <div>
+   <!-- Root foo :{{rootFoo}} <br/>
+      Robots foo :{{robotsFoo}} <br/>
+         Users foo :{{usersFoo}} <br/>
+         <br/>
+            Root Getter foo :{{rootGetterFoo}} <br/>
+              Robots Getter foo :{{robotsGetterFoo}} <br/>
+               Users Getter foo :{{usersGetterFoo}} <br/> -->
     <header>
     <nav>
       <ul>
@@ -12,6 +19,14 @@
           <router-link  class="nav-link" :to="{name:'Build'}" exact>
           Build
           </router-link>
+        </li>
+          <li class="nav-item cart">
+          <router-link  class="nav-link" to="/cart" exact>
+          Cart
+          </router-link>
+          <div class="cart-items">
+            {{cart.length}}
+            </div>
         </li>
         <!-- <li>{{user.userName}}</li>
         <button @click="changeUserName()">Change</button> -->
@@ -36,9 +51,24 @@
 // import HomePage from './home/HomePage.vue';
 // import RobotBuilder from './build/RobertBuilder.vue';
 // import Search from './search/Search.vue';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+
+    cart() {
+      return this.$store.state.robots.cart;
+    },
+    ...mapState({
+      rootFoo: 'foo',
+      // robotsFoo: (state) => state.robots.foo,
+      usersFoo: (state) => state.users.foo
+    }),
+    ...mapState('robots', { robotsFoo: 'foo' }),
+    ...mapGetters({ rootGetterFoo: 'foo' }),
+    ...mapGetters('robots', { robotsGetterFoo: 'foo' })
+  }
   // provide() {
   //   return {
   //     user: this.user
@@ -116,5 +146,23 @@ color:white;
   background-color: #aaa;
   width: 100px;
   min-height: 300px;
+}
+
+.nav-item.cart{
+  position: relative;
+  margin-left: auto;
+   border-right: none;
+}
+
+.cart-items{
+  position: absolute;
+  top:-5px;
+  right: -9px;
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 100px;
+  background-color: hotpink;
 }
 </style>

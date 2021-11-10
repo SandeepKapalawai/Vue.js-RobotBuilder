@@ -1,6 +1,7 @@
+/* eslint-disable no-alert */
 <template>
   <div>
-    <div class="content">
+    <div v-if="availableParts" class="content">
           <div class="preview">
      <!-- <CollapsabileSection></CollapsabileSection> -->
      <CollapsabileSection>
@@ -19,42 +20,25 @@
       </div>
      </CollapsabileSection>
     </div>
-
       <button class="add-to-cart" @click="addToCard()">Add to cart </button>
     </div>
-    <div>
-      <table>
-        <thead>
-          <tr>
-            <th>Robot</th>
-            <th class="cost">Cost</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(robot, index) in cart" :key="index"><td>{{robot.heads.title}}</td>
-          <td class="cost">{{robot.cost}}</td></tr>
-        </tbody>
-      </table>
-    </div>
     <div class="top-row">
-      <!-- <div class="top part" :class="[saleBorderClass]"> -->
-        <!-- <div class="robot-name">{{selectedRobot.heads.title}}
-        <span class="sale" v-if="selectedRobot.heads.onSale">sale</span></div>  -->
+      <div class="top part" :class="[saleBorderClass]"> -->
+       <div class="robot-name">{{selectedRobot.heads.title}}
+        <span class="sale" v-if="selectedRobot.heads.onSale">sale</span></div>
        <PartSelector :parts ="availableParts.heads" position="top"
-        @partSelected ="part => selectedRobot.heads=part" />
-      <!-- </div> -->
+        @partSelected ="part => selectedRobot.heads=part" /> -->
+       </div>
     </div>
     <div class="middle-row">
-       <PartSelector :parts ="availableParts.arms" position="left"
+        <PartSelector :parts ="availableParts.arms" position="left"
         @partSelected ="part => selectedRobot.leftArm=part" />
         <PartSelector :parts ="availableParts.torsos" position="center"
           @partSelected ="part => selectedRobot.torsoArm=part" />
         <PartSelector :parts ="availableParts.arms" position="right"
           @partSelected ="part => selectedRobot.rightArm=part" />
     </div>
-
     <div class="bottom-row">
-
       <PartSelector :parts ="availableParts.bases" position="bottom"
         @partSelected ="part => selectedRobot.basesArm=part" />
     </div>
@@ -62,18 +46,25 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import createdhookMixins from './created-hook-mixin';
-import availableParts from '../data/parts';
 import PartSelector from './PartSelector.vue';
 import CollapsabileSection from '../shared/CollapsabileSection.vue';
 
 export default {
   name: 'RobotBuilder',
+  created() {
+    this.getParts();
+  },
   beforeRouteLeave(to, from, next) {
     if (this.addedToCart) {
       // eslint-disable-next-line no-alert
       next(true);
     } else {
+      // eslint-disable-next-line no-alert
+      // eslint-disable-next-line no-restricted-globals
+      // eslint-disable-next-line no-alert
+      // eslint-disable-next-line no-restricted-globals
       // eslint-disable-next-line no-alert
       // eslint-disable-next-line no-restricted-globals
       // eslint-disable-next-line no-alert
@@ -88,7 +79,6 @@ export default {
     return {
       cart: [],
       addedToCart: false,
-      availableParts,
       selectedRobot: {
         heads: {},
         leftArm: {},
@@ -99,61 +89,14 @@ export default {
     };
   },
   methods: {
-
+    ...mapActions('robots', ['getParts', 'addRobotToCart']),
     addToCard() {
       const robot = this.selectedRobot;
       const cost = robot.heads.cost +
         robot.leftArm.cost + robot.rightArm.cost + robot.torsoArm.cost + robot.basesArm.cost;
-      this.cart.push({ ...robot, cost });
-      console.log(this.addedToCart);
+      this.addRobotToCart({ ...robot, cost }).then(() => this.$router.push('/cart'));
       this.addedToCart = true;
     }
-    // selectNextHead() {
-    //   this.selectedHeadIndex = getNextValidIndex(this.selectedHeadIndex,
-    //     availableParts.heads.length);
-    // },
-    // selectPreviousHead() {
-    //   this.selectedHeadIndex = getPreviousValidIndex(this.selectedHeadIndex,
-    //     availableParts.heads.length);
-    // },
-    // // left arm
-    // selectPreviousleftArm() {
-    //   this.selectedleftArmIndex = getPreviousValidIndex(this.selectedleftArmIndex,
-    //     availableParts.arms.length);
-    // },
-    // selectNextleftArm() {
-    //   this.selectedleftArmIndex = getNextValidIndex(this.selectedleftArmIndex,
-    //     availableParts.arms.length);
-    // },
-    // // torsos
-    // selectPreviousTorsos() {
-    //   this.selectedTorsosIndex = getPreviousValidIndex(this.selectedTorsosIndex,
-    //     availableParts.torsos.length);
-    // },
-    // selectNextTorsos() {
-    //   this.selectedTorsosIndex = getNextValidIndex(this.selectedTorsosIndex,
-    //     availableParts.torsos.length);
-    // },
-
-    // // right arm
-    // selectPreviousrightArm() {
-    //   this.selectedrightArmIndex = getPreviousValidIndex(this.selectedrightArmIndex,
-    //     availableParts.arms.length);
-    // },
-    // selectNextrightArm() {
-    //   this.selectedrightArmIndex = getNextValidIndex(this.selectedrightArmIndex,
-    //     availableParts.arms.length);
-    // },
-
-    // // bases
-    // selectPreviousbase() {
-    //   this.selectedbasesIndex = getPreviousValidIndex(this.selectedbasesIndex,
-    //     availableParts.bases.length);
-    // },
-    // selectNextbase() {
-    //   this.selectedbasesIndex = getNextValidIndex(this.selectedbasesIndex,
-    //     availableParts.bases.length);
-    // }
   },
   computed: {
     headerBorderStyle() {
@@ -163,6 +106,9 @@ export default {
     },
     saleBorderClass() {
       return this.selectedRobot.heads.onSale ? 'sale-border' : '';
+    },
+    availableParts() {
+      return this.$store.state.robots.parts;
     }
   }
 };
@@ -275,15 +221,6 @@ export default {
     top: 150px;
     padding:10px;
     font-size:20px;
-  }
-
-  td,th{
-    text-align: left;
-    padding: 5px;
-    padding-right: 20px;
-  }
-  .cost{
-    text-align: right;
   }
 
   .sale-border{

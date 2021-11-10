@@ -9,6 +9,7 @@ import RobotBases from '../parts/RobotsBases.vue';
 import RobotTorsos from '../parts/RobotsTorsos.vue';
 import SidebarStandard from '../shared/SidebarStandard.vue';
 import SidebarBuild from '../shared/SidebarBuild.vue';
+import ShoppingCart from '../cart/ShoppingCart.vue';
 
 export default createRouter({
   history: createWebHistory(),
@@ -65,6 +66,11 @@ export default createRouter({
       next(isValid); // handlle routte param ids
     }
     // another way to bypass your route as props
+  },
+  {
+    path: '/cart',
+    name: 'Cart',
+    component: ShoppingCart
   }
   ]
 });
