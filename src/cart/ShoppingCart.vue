@@ -15,10 +15,10 @@
       <tbody>
         <tr v-for="(robot, index) in cart" :key="index">
           <td class="robot-title">
-            {{robot.heads.title}}
+            {{robot.heads.title }}
           </td>
           <td class="cost">
-            {{robot.cost}}
+               {{$filters.currency(robot.cost, '$')}}
           </td>
         </tr>
       </tbody>
@@ -43,7 +43,7 @@
             {{robot.heads.title}}
           </td>
           <td class="cost">
-            {{robot.cost}}
+              {{$filters.currency(robot.cost, '$')}}
           </td>
         </tr>
       </tbody>
@@ -52,9 +52,13 @@
 </template>
 
 <script>
+import currencyFilter from '../shared/currency-filter';
+
 export default {
   name: 'Cart',
-
+  methods: {
+    currency: currencyFilter
+  },
   computed: {
     cart() {
       return this.$store.state.robots.cart;
